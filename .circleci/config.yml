@@ -40,7 +40,7 @@ jobs:
               if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
                 curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
                 tar -zxvf apache-maven-3.9.1-bin.tar.gz
-                export PATH=$PATH:$(pwd)/apache-maven-3.9.1
+                export PATH=$PATH:$(pwd)/apache-maven-3.9.1/bin
                 echo $PATH
               fi
       # Use mvn clean and package as the standard maven build phase
@@ -48,7 +48,7 @@ jobs:
           name: Build
           command: |
                 echo $PATH
-                export PATH=$PATH:$(pwd)/apache-maven-3.9.1
+                export PATH=$PATH:$(pwd)/apache-maven-3.9.1/bin
                 echo $PATH
                 ls -lrtah
                 mvn spring-boot:build-image -DskipTests=true -Pnative
