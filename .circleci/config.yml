@@ -40,7 +40,9 @@ jobs:
               #if [ "${CIRCLE_BRANCH}" == "master" ]; then
                 curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
                 tar -zxvf apache-maven-3.9.1-bin.tar.gz
+                echo "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
                 export PATH=$PATH:$(pwd)/apache-maven-3.9.1
+                echo $PATH
               #fi
       # Use mvn clean and package as the standard maven build phase
       - run:
