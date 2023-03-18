@@ -53,6 +53,7 @@ jobs:
       - run:
           name: Build
           command: |
+                docker --version
                 mvn spring-boot:build-image -DskipTests=true -Pnative
       # Then run your tests!
       - run:
