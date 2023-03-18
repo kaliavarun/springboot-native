@@ -26,6 +26,7 @@ jobs:
       - run:
           name: Install maven
           command: |
+              docker container ls
               if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
                 curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
                 tar -zxvf apache-maven-3.9.1-bin.tar.gz
