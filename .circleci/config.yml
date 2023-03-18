@@ -16,6 +16,30 @@ jobs:
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
+      - run:
+          name: Install GraalVM
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java17-linux-amd64-22.3.1.tar.gz
+                  tar -zxvf graalvm-ce-java17-linux-amd64-22.3.1.tar.gz
+                  export GRAALVM_HOME=$(pwd)/graalvm-ce-java17-22.3.1
+                  export JAVA_HOME=$GRAALVM_HOME
+                  export PATH=$PATH:GRAALVM_HOME/bin
+              fi
+      - run:
+          name: Install native-image
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                $GRAALVM_HOME/bin/gu install native-image
+              fi
+      - run:
+          name: Install maven
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
+                tar -zxvf apache-maven-3.9.1-bin.tar.gz
+                export PATH=$PATH:$(pwd)/apache-maven-3.9.1
+              fi
       # Checkout the code as the first step.
       - checkout
       # Use mvn clean and package as the standard maven build phase
