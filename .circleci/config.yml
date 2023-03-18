@@ -24,39 +24,35 @@ jobs:
       # Checkout the code as the first step.
       - checkout
       - run:
-          name: Install GraalVM
-          command: |
-              if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
-                  curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java17-linux-amd64-22.3.1.tar.gz
-                  tar -zxvf graalvm-ce-java17-linux-amd64-22.3.1.tar.gz
-                  export GRAALVM_HOME=$(pwd)/graalvm-ce-java17-22.3.1
-                  export JAVA_HOME=$GRAALVM_HOME
-                  export PATH=$PATH:GRAALVM_HOME/bin
-              fi
-      - run:
-          name: Install native-image
-          command: |
-              if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
-                export GRAALVM_HOME=$(pwd)/graalvm-ce-java17-22.3.1
-                $GRAALVM_HOME/bin/gu install native-image
-              fi
-      - run:
           name: Install maven
           command: |
               if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
                 curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
                 tar -zxvf apache-maven-3.9.1-bin.tar.gz
-                export PATH=$PATH:$(pwd)/apache-maven-3.9.1/bin
-                echo $PATH
+                echo 'export PATH=$PATH:$(pwd)/apache-maven-3.9.1/bin' >> "$BASH_ENV"
+                source "$BASH_ENV"
               fi
+      - run:
+          name: Install GraalVM
+          command: |
+              if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
+                  curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java17-linux-amd64-22.3.1.tar.gz
+                  tar -zxvf graalvm-ce-java17-linux-amd64-22.3.1.tar.gz
+                  echo 'export GRAALVM_HOME=$(pwd)/graalvm-ce-java17-22.3.1' >> "$BASH_ENV"
+                  echo 'export JAVA_HOME=$GRAALVM_HOME' >> "$BASH_ENV"
+                  echo 'export PATH=$PATH:GRAALVM_HOME/bin' >> "$BASH_ENV"
+                  source "$BASH_ENV"
+              fi
+      - run:
+          name: Install native-image
+          command: |
+              if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
+                $GRAALVM_HOME/bin/gu install native-image
+              fi      
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
           command: |
-                echo $PATH
-                export PATH=$PATH:$(pwd)/apache-maven-3.9.1/bin
-                echo $PATH
-                ls -lrtah
                 mvn spring-boot:build-image -DskipTests=true -Pnative
       # Then run your tests!
       - run:
