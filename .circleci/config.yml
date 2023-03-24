@@ -60,6 +60,13 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      # Push to docker hub
+      - run:
+          name: Push to docker
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            docker tag docker.io/library/springboot-native:0.0.1-SNAPSHOT $DOCKER_USER/$DOCKER_USER:springboot-native
+            docker push $DOCKER_USER/$DOCKER_USER:springboot-native
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -67,4 +74,6 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build-and-test
+      - build-and-test:
+          context:
+            - docker-hub
