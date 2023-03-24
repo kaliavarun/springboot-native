@@ -60,6 +60,13 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      # Push to docker hub
+      - run:
+          name: Push to docker
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            docker tag springboot-native $DOCKER_USER/springboot-native:0.0.1-SNAPSHOT
+            docker push $DOCKER_USER/springboot-native:0.0.1-SNAPSHOT
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
