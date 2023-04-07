@@ -24,9 +24,15 @@ jobs:
       # Checkout the code as the first step.
       - checkout
       - run:
+          name: Environment
+          command: |
+            cat /etc/os-release
+            env              
+            docker --version
+      - run:
           name: Install maven
           command: |
-              docker container ls
+              env              
               if [[ "$CIRCLE_BRANCH" =~ ^(master|circleci-project-setup)$ ]]; then
                 curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
                 tar -zxvf apache-maven-3.9.1-bin.tar.gz
@@ -64,6 +70,7 @@ jobs:
       - run:
           name: Push to docker
           command: |
+            docker container ls
             docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
             docker tag docker.io/library/springboot-native:0.0.1-SNAPSHOT $DOCKER_USER/springboot-native:latest
             docker push $DOCKER_USER/springboot-native:latest
